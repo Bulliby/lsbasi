@@ -1,0 +1,5 @@
+Les tokens sont l'input fragmentés avec un type et une valeur:
+INTEGER, 3
+L'analyse lexical est le fait de transformer l'input en TOKEN
+Un lexem est séquence de charactères qui forme un TOKEN
+Le rôle d'un parser est de trouver des "phrases" dans une série de TOKEN
