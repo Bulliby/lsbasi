@@ -213,15 +213,13 @@ class Parser(object):
 #                                                                             #
 ###############################################################################
 
-
 class NodeVisitor(object):
-    """ If this is not a leaf we print the content token in a post-fix
-    notation. (Reverse Polish Notation RPN) """ 
+    """Lisp Style notation pre-fix order""" 
     def visit(self, node):
+        print(node.token.value)
         if (node.token.type != INTEGER):
             self.visit(node.left)
             self.visit(node.right)
-        print(node.token.value)
         return
 
     def generic_visit(self, node):
@@ -252,6 +250,7 @@ def main():
         parser = Parser(lexer)
         interpreter = Interpreter(parser)
         result = interpreter.interpret()
+
 
 if __name__ == '__main__':
     main()
