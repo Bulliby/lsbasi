@@ -37,7 +37,7 @@ class Lexer():
             elif self.currentChar() == '*':
                 tokens.append(Token('MUL', self.handleOperator()))
             else:
-                self.advance()
+                raise Exception("Invalid Character")
         tokens.append(Token(None, 0))
         return tokens
 
@@ -82,10 +82,9 @@ class Parser():
         self.pos+=1
 
     def eat(self, token, value):
+        if token.token != value:
+            raise Exception("Parse Error")
         self.getNextToken()
-        print(token)
-        print(value)
-        print('----')
 
     def exp(self):
         self.term()
@@ -106,8 +105,8 @@ class Parser():
             self.factor()
 
     def factor(self):
-        if self.getToken().token == 'INT':
-            self.eat(self.getToken(), 'INT')
+        #if self.getToken().token == 'INT':
+        self.eat(self.getToken(), 'INT')
 
     def parse(self):
         self.exp()
