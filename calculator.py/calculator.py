@@ -38,6 +38,7 @@ class Lexer():
                 tokens.append(Token('MUL', self.handleOperator()))
             else:
                 self.advance()
+        tokens.append(Token(None, 0))
         return tokens
 
     def handleInteger(self):
@@ -56,10 +57,65 @@ class Lexer():
         while self.currentChar().isspace():
             self.advance()
         
+class BinOp():
+    def __init__(self, left, right, operator):
+        self.left = left
+        self.right = right
+        self.operator = operator
+
+    def __str__(self):
+        return "Opérateur binaire {operator} avec left : {left} et right : {right}".format(operator=self.operator, left=self.left, right=self.right)
+
+class Parser():
+    def __init__(self, tokens):
+        self.tokens = tokens
+        self.pos = 0
+        self.nbTokens = len(tokens)
+
+    def __str__(self):
+        return 'This object handle the parsing of the expression'
+
+    def getToken(self):
+        return self.tokens[self.pos]
+
+    def getNextToken(self):
+        self.pos+=1
+
+    def eat(self, token, value):
+        self.getNextToken()
+        print(token)
+        print(value)
+        print('----')
+
+    def exp(self):
+        self.term()
+        while self.getToken().token == 'PLUS' or self.getToken().token == 'MINUS':
+            if self.getToken().token == 'PLUS':
+                self.eat(self.getToken(), 'PLUS')
+            elif self.getToken().token == 'MINUS':
+                self.eat(self.getToken(), 'MINUS')
+            self.term()
+
+    def term(self):
+        self.factor()
+        while self.getToken().token == 'MUL' or self.getToken().token == 'DIV':
+            if self.getToken().token == 'MUL':
+                self.eat(self.getToken(), 'MUL')
+            elif self.getToken().token == 'DIV':
+                self.eat(self.getToken(), 'DIV')
+            self.factor()
+
+    def factor(self):
+        if self.getToken().token == 'INT':
+            self.eat(self.getToken(), 'INT')
+
+    def parse(self):
+        self.exp()
 
 input = input()
 lexer = Lexer(input)
 tokens = lexer.splitInput()
 
-for token in tokens:
-    print(token)
+parser = Parser(tokens)
+
+parser.parse()
