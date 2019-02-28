@@ -56,7 +56,7 @@ class Lexer():
     def handleWhiteSpace(self):
         while self.currentChar().isspace():
             self.advance()
-        
+
 class BinOp():
     def __init__(self, left, right, operator):
         self.left = left
@@ -65,6 +65,13 @@ class BinOp():
 
     def __str__(self):
         return "Opérateur binaire {operator} avec left : {left} et right : {right}".format(operator=self.operator, left=self.left, right=self.right)
+
+class Int():
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return "Interger who's value is {value}".format(value=self.value)
 
 class Parser():
     def __init__(self, tokens):
@@ -96,12 +103,12 @@ class Parser():
                 self.eat(self.getToken(), 'MINUS')
             node = BinOp(node, self.term(), token)
         return node
-            
+
 
     def term(self):
         node = self.factor()
         while self.getToken().token == 'MUL' or self.getToken().token == 'DIV':
-            token = self.getToken().token 
+            token = self.getToken().token
             if self.getToken().token == 'MUL':
                 self.eat(self.getToken(), 'MUL')
             elif self.getToken().token == 'DIV':
@@ -112,16 +119,27 @@ class Parser():
     def factor(self):
         integer = self.getToken().value
         self.eat(self.getToken(), 'INT')
-        return integer
+        return Int(int(integer))
 
     def parse(self):
-        root = self.exp()
-        print(root)
+        return self.exp()
+
+class Interpreter():
+    def __init__(self, root):
+        self.root = root
+        self.total = 0
+
+    def visitNode(self, node):
+        if type(node) is not Int:
+            self.visitNode(node.left)
+            self.visitNode(node.right)
+            print(node)
 
 input = input()
 lexer = Lexer(input)
 tokens = lexer.splitInput()
-
 parser = Parser(tokens)
+nodes = parser.parse()
 
-parser.parse()
+interpreter = Interpreter(nodes)
+interpreter.visitNode(nodes)
