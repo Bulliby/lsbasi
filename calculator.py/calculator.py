@@ -87,29 +87,36 @@ class Parser():
         self.getNextToken()
 
     def exp(self):
-        self.term()
+        node = self.term()
         while self.getToken().token == 'PLUS' or self.getToken().token == 'MINUS':
+            token = self.getToken().token 
             if self.getToken().token == 'PLUS':
                 self.eat(self.getToken(), 'PLUS')
             elif self.getToken().token == 'MINUS':
                 self.eat(self.getToken(), 'MINUS')
-            self.term()
+            node = BinOp(node, self.term(), token)
+        return node
+            
 
     def term(self):
-        self.factor()
+        node = self.factor()
         while self.getToken().token == 'MUL' or self.getToken().token == 'DIV':
+            token = self.getToken().token 
             if self.getToken().token == 'MUL':
                 self.eat(self.getToken(), 'MUL')
             elif self.getToken().token == 'DIV':
                 self.eat(self.getToken(), 'DIV')
-            self.factor()
+            node = BinOp(node, self.factor(), token)
+        return node
 
     def factor(self):
-        #if self.getToken().token == 'INT':
+        integer = self.getToken().value
         self.eat(self.getToken(), 'INT')
+        return integer
 
     def parse(self):
-        self.exp()
+        root = self.exp()
+        print(root)
 
 input = input()
 lexer = Lexer(input)
